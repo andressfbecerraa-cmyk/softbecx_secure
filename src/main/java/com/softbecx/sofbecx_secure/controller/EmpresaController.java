@@ -2,6 +2,7 @@ package com.softbecx.sofbecx_secure.controller;
 
 import com.softbecx.sofbecx_secure.model.Empresa;
 import com.softbecx.sofbecx_secure.repository.EmpresaRepository;
+import com.softbecx.sofbecx_secure.repository.UsuarioRepository;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -20,8 +21,14 @@ public class EmpresaController {
 
     private final EmpresaRepository empresaRepository;
 
-    public EmpresaController(EmpresaRepository empresaRepository) {
+    private final UsuarioRepository usuarioRepository;
+
+    public EmpresaController(
+            EmpresaRepository empresaRepository,
+            UsuarioRepository usuarioRepository) {
+
         this.empresaRepository = empresaRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @GetMapping("/registro-empresa")
@@ -110,13 +117,7 @@ public class EmpresaController {
             return "acceso-denegado";
         }
 
-        List<Empresa> empresas =
-                empresaRepository.findAll();
-
-        model.addAttribute(
-                "empresas",
-                empresas
-        );
+        cargarEmpresas(model);
 
         return "admin-empresas";
     }
@@ -226,5 +227,57 @@ public class EmpresaController {
         empresaRepository.save(empresaExistente);
 
         return "redirect:/admin/empresas";
+    }
+
+    @PostMapping("/admin/empresas/eliminar/{id}")
+    public String eliminarEmpresa(
+            @PathVariable Long id,
+            HttpSession session,
+            Model model) {
+
+        Object usuarioId =
+                session.getAttribute("usuarioId");
+
+        Object rol =
+                session.getAttribute("rol");
+
+        if (usuarioId == null) {
+            return "redirect:/login";
+        }
+
+        if (!"ADMIN".equals(String.valueOf(rol))) {
+            return "acceso-denegado";
+        }
+
+        if (!empresaRepository.existsById(id)) {
+            return "redirect:/admin/empresas";
+        }
+
+        if (usuarioRepository.existsByEmpresaId(id)) {
+
+            model.addAttribute(
+                    "empresaEnUso",
+                    "No se puede eliminar esta empresa porque tiene usuarios asociados."
+            );
+
+            cargarEmpresas(model);
+
+            return "admin-empresas";
+        }
+
+        empresaRepository.deleteById(id);
+
+        return "redirect:/admin/empresas";
+    }
+
+    private void cargarEmpresas(Model model) {
+
+        List<Empresa> empresas =
+                empresaRepository.findAll();
+
+        model.addAttribute(
+                "empresas",
+                empresas
+        );
     }
 }

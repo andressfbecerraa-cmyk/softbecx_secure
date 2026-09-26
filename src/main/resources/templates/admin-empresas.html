@@ -14,6 +14,13 @@
 
 <h2>Empresas registradas</h2>
 
+<div
+        th:if="${empresaEnUso}"
+        th:text="${empresaEnUso}">
+</div>
+
+<br>
+
 <table border="1">
 
     <thead>
@@ -52,6 +59,18 @@
                     th:href="@{/admin/empresas/editar/{id}(id=${empresa.id})}">
                 Editar
             </a>
+
+            <form
+                    th:action="@{/admin/empresas/eliminar/{id}(id=${empresa.id})}"
+                    method="post"
+                    style="display: inline;"
+                    onsubmit="return confirm('¿Estás seguro de eliminar esta empresa?');">
+
+                <button type="submit">
+                    Eliminar
+                </button>
+
+            </form>
 
         </td>
 
