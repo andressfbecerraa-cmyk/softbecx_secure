@@ -42,8 +42,8 @@ public class AdminController {
                 usuarioRepository.findAll();
 
         model.addAttribute("usuarios", usuarios);
-
         model.addAttribute("roles", Rol.values());
+        model.addAttribute("usuarioSesionId", usuarioId);
 
         return "admin-usuarios";
     }
@@ -52,7 +52,8 @@ public class AdminController {
     public String cambiarRol(
             HttpSession session,
             @RequestParam("usuarioId") Long usuarioId,
-            @RequestParam("rol") Rol nuevoRol) {
+            @RequestParam("rol") Rol nuevoRol,
+            Model model) {
 
         Object usuarioSesionId =
                 session.getAttribute("usuarioId");
@@ -78,10 +79,74 @@ public class AdminController {
         Usuario usuario =
                 usuarioEncontrado.get();
 
+        if (Rol.PROVEEDOR.equals(nuevoRol)
+                && usuario.getEmpresa() == null) {
+
+            model.addAttribute(
+                    "errorRol",
+                    "No se puede asignar el rol PROVEEDOR porque el usuario no tiene una empresa asociada."
+            );
+
+            cargarDatosUsuarios(model);
+
+            return "admin-usuarios";
+        }
+
         usuario.setRol(nuevoRol);
 
         usuarioRepository.save(usuario);
 
         return "redirect:/admin/usuarios";
+    }
+
+    @PostMapping("/admin/usuarios/eliminar")
+    public String eliminarUsuario(
+            HttpSession session,
+            @RequestParam("usuarioId") Long usuarioId) {
+
+        Object usuarioSesionId =
+                session.getAttribute("usuarioId");
+
+        Object rolSesion =
+                session.getAttribute("rol");
+
+        if (usuarioSesionId == null) {
+            return "redirect:/login";
+        }
+
+        if (!"ADMIN".equals(String.valueOf(rolSesion))) {
+            return "acceso-denegado";
+        }
+
+        Long idAdministrador =
+                Long.valueOf(usuarioSesionId.toString());
+
+        if (idAdministrador.equals(usuarioId)) {
+            return "redirect:/admin/usuarios";
+        }
+
+        if (!usuarioRepository.existsById(usuarioId)) {
+            return "redirect:/admin/usuarios";
+        }
+
+        usuarioRepository.deleteById(usuarioId);
+
+        return "redirect:/admin/usuarios";
+    }
+
+    private void cargarDatosUsuarios(Model model) {
+
+        List<Usuario> usuarios =
+                usuarioRepository.findAll();
+
+        model.addAttribute(
+                "usuarios",
+                usuarios
+        );
+
+        model.addAttribute(
+                "roles",
+                Rol.values()
+        );
     }
 }

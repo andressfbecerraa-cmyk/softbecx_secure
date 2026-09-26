@@ -14,6 +14,13 @@
 
 <h2>Usuarios registrados</h2>
 
+<div
+        th:if="${errorRol}"
+        th:text="${errorRol}">
+</div>
+
+<br>
+
 <table border="1">
 
     <thead>
@@ -23,6 +30,7 @@
         <th>Nombre</th>
         <th>Apellido</th>
         <th>Correo</th>
+        <th>Empresa</th>
         <th>Rol actual</th>
         <th>Cambiar rol</th>
         <th>Eliminar</th>
@@ -41,6 +49,20 @@
         <td th:text="${usuario.apellido}"></td>
 
         <td th:text="${usuario.correo}"></td>
+
+        <td>
+
+                    <span
+                            th:if="${usuario.empresa != null}"
+                            th:text="${usuario.empresa.nombre}">
+                    </span>
+
+            <span
+                    th:unless="${usuario.empresa != null}">
+                        Sin empresa
+                    </span>
+
+        </td>
 
         <td th:text="${usuario.rol}"></td>
 
