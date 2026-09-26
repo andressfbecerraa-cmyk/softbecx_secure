@@ -1,7 +1,6 @@
 package com.softbecx.sofbecx_secure.controller;
 
 import com.softbecx.sofbecx_secure.model.Empresa;
-import com.softbecx.sofbecx_secure.model.EstadoFactura;
 import com.softbecx.sofbecx_secure.model.Factura;
 import com.softbecx.sofbecx_secure.model.Rol;
 import com.softbecx.sofbecx_secure.model.Usuario;
@@ -16,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -66,11 +64,6 @@ public class FacturaController {
         model.addAttribute(
                 "facturas",
                 facturas
-        );
-
-        model.addAttribute(
-                "estados",
-                EstadoFactura.values()
         );
 
         return "admin-facturas";
@@ -136,72 +129,6 @@ public class FacturaController {
         facturaService.guardarFactura(factura);
 
         return "redirect:/admin/facturas";
-    }
-
-    @PostMapping("/admin/facturas/estado")
-    public String cambiarEstadoFactura(
-            HttpSession session,
-            @RequestParam("facturaId") Long facturaId,
-            @RequestParam("estado") EstadoFactura nuevoEstado,
-            Model model) {
-
-        Object usuarioId =
-                session.getAttribute("usuarioId");
-
-        Object rol =
-                session.getAttribute("rol");
-
-        if (usuarioId == null) {
-            return "redirect:/login";
-        }
-
-        if (!"ADMIN".equals(String.valueOf(rol))) {
-            return "acceso-denegado";
-        }
-
-        boolean cambioRealizado =
-                facturaService.cambiarEstado(
-                        facturaId,
-                        nuevoEstado
-                );
-
-        if (!cambioRealizado) {
-
-            if (nuevoEstado == EstadoFactura.PAGADA) {
-
-                model.addAttribute(
-                        "errorEstado",
-                        "La factura no puede marcarse como pagada porque no tiene una validación de pago aprobada."
-                );
-
-            } else {
-
-                model.addAttribute(
-                        "errorEstado",
-                        "No se puede realizar ese cambio de estado."
-                );
-            }
-        }
-
-        cargarDatosFacturas(model);
-
-        return "admin-facturas";
-    }
-
-    private void cargarDatosFacturas(Model model) {
-
-        List<Factura> facturas =
-                facturaService.listarFacturas();
-
-        model.addAttribute(
-                "facturas",
-                facturas
-        );
-
-        model.addAttribute(
-                "estados",
-                EstadoFactura.values()
-        );
     }
 
     private void cargarDatosFormulario(Model model) {

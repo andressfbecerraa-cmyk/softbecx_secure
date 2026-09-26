@@ -2,10 +2,15 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
     <title>Administración de Facturas</title>
+
 </head>
 
 <body>
@@ -14,27 +19,38 @@
 
 <h2>Facturas registradas</h2>
 
-<div
-        th:if="${errorEstado}"
-        th:text="${errorEstado}">
+<div th:if="${#lists.isEmpty(facturas)}">
+
+    <p>
+        No hay facturas registradas.
+    </p>
+
 </div>
 
-<br>
-
-<table border="1">
+<table
+        border="1"
+        th:if="${!#lists.isEmpty(facturas)}">
 
     <thead>
 
     <tr>
+
         <th>ID</th>
+
         <th>Número de factura</th>
+
         <th>Fecha</th>
+
         <th>Concepto</th>
+
         <th>Valor</th>
+
         <th>Empresa</th>
+
         <th>Proveedor</th>
-        <th>Estado actual</th>
-        <th>Cambiar estado</th>
+
+        <th>Estado</th>
+
     </tr>
 
     </thead>
@@ -43,50 +59,38 @@
 
     <tr th:each="factura : ${facturas}">
 
-        <td th:text="${factura.id}"></td>
+        <td
+                th:text="${factura.id}">
+        </td>
 
-        <td th:text="${factura.numeroFactura}"></td>
+        <td
+                th:text="${factura.numeroFactura}">
+        </td>
 
-        <td th:text="${factura.fecha}"></td>
+        <td
+                th:text="${factura.fecha}">
+        </td>
 
-        <td th:text="${factura.concepto}"></td>
+        <td
+                th:text="${factura.concepto}">
+        </td>
 
-        <td th:text="${factura.valor}"></td>
+        <td
+                th:text="${factura.valor}">
+        </td>
 
-        <td th:text="${factura.empresa.nombre}"></td>
+        <td
+                th:text="${factura.empresa.nombre}">
+        </td>
 
-        <td th:text="${factura.proveedor.nombre + ' ' + factura.proveedor.apellido}"></td>
+        <td
+                th:text="${factura.proveedor.nombre
+                        + ' '
+                        + factura.proveedor.apellido}">
+        </td>
 
-        <td th:text="${factura.estado}"></td>
-
-        <td>
-
-            <form
-                    th:action="@{/admin/facturas/estado}"
-                    method="post">
-
-                <input
-                        type="hidden"
-                        name="facturaId"
-                        th:value="${factura.id}">
-
-                <select name="estado">
-
-                    <option
-                            th:each="estado : ${estados}"
-                            th:value="${estado}"
-                            th:text="${estado}"
-                            th:selected="${estado == factura.estado}">
-                    </option>
-
-                </select>
-
-                <button type="submit">
-                    Guardar
-                </button>
-
-            </form>
-
+        <td
+                th:text="${factura.estado}">
         </td>
 
     </tr>
@@ -104,17 +108,16 @@
 <br>
 <br>
 
-<a th:href="@{/dashboard}">
-    Volver al Dashboard
+<a th:href="@{/admin/aprobaciones-facturas}">
+    Ir a aprobación de facturas
 </a>
 
 <br>
 <br>
 
-<a th:href="@{/logout}">
-    Cerrar sesión
+<a th:href="@{/admin/validaciones-pago}">
+    Ir a validación de pagos
 </a>
 
-</body>
-
-</html>
+<br>
+<

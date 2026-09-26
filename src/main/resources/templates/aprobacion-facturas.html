@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+    <title>Aprobación de Facturas</title>
+
+</head>
+
+<body>
+
+<h1>Aprobación de Facturas</h1>
+
+<p>
+    En esta sección se revisan las facturas pendientes
+    y se registra la decisión de aprobación.
+</p>
+
+<div
+        th:if="${errorAprobacion}"
+        th:text="${errorAprobacion}">
+</div>
+
+<br>
+
+<h2>Facturas pendientes de aprobación</h2>
+
+<div th:if="${#lists.isEmpty(facturas)}">
+
+    <p>
+        No hay facturas pendientes de aprobación.
+    </p>
+
+</div>
+
+<table
+        border="1"
+        th:if="${!#lists.isEmpty(facturas)}">
+
+    <thead>
+
+    <tr>
+
+        <th>ID</th>
+
+        <th>Número de factura</th>
+
+        <th>Fecha</th>
+
+        <th>Concepto</th>
+
+        <th>Valor</th>
+
+        <th>Empresa</th>
+
+        <th>Proveedor</th>
+
+        <th>Decisión</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    <tr th:each="factura : ${facturas}">
+
+        <td
+                th:text="${factura.id}">
+        </td>
+
+        <td
+                th:text="${factura.numeroFactura}">
+        </td>
+
+        <td
+                th:text="${factura.fecha}">
+        </td>
+
+        <td
+                th:text="${factura.concepto}">
+        </td>
+
+        <td
+                th:text="${factura.valor}">
+        </td>
+
+        <td
+                th:text="${factura.empresa.nombre}">
+        </td>
+
+        <td
+                th:text="${factura.proveedor.nombre
+                        + ' '
+                        + factura.proveedor.apellido}">
+        </td>
+
+        <td>
+
+            <form
+                    th:action="@{/admin/aprobaciones-facturas}"
+                    method="post">
+
+                <input
+                        type="hidden"
+                        name="facturaId"
+                        th:value="${factura.id}">
+
+                <div>
+
+                    <label
+                            th:for="'resultado-' + ${factura.id}">
+                        Resultado:
+                    </label>
+
+                    <select
+                            th:id="'resultado-' + ${factura.id}"
+                            name="resultado"
+                            required>
+
+                        <option value="">
+                            Seleccione una decisión
+                        </option>
+
+                        <option
+                                th:each="resultado : ${resultados}"
+                                th:value="${resultado}"
+                                th:text="${resultado}">
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <br>
+
+                <div>
+
+                    <label
+                            th:for="'observacion-' + ${factura.id}">
+                        Observación:
+                    </label>
+
+                    <br>
+
+                    <textarea
+                            th:id="'observacion-' + ${factura.id}"
+                            name="observacion"
+                            rows="4"
+                            cols="30"
+                            required
+                            placeholder="Escriba la observación de la decisión">
+                            </textarea>
+
+                </div>
+
+                <br>
+
+                <button type="submit">
+                    Registrar decisión
+                </button>
+
+            </form>
+
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+
+<br>
+
+<a th:href="@{/admin/facturas}">
+    Ver administración de facturas
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/dashboard}">
+    Volver al Dashboard
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/logout}">
+    Cerrar sesión
+</a>
+
+</body>
+
+</html>
