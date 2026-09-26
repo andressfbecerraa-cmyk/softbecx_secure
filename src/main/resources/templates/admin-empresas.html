@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administración de Empresas</title>
+</head>
+
+<body>
+
+<h1>Administración de Empresas</h1>
+
+<h2>Empresas registradas</h2>
+
+<table border="1">
+
+    <thead>
+
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>NIT</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Dirección</th>
+        <th>Acciones</th>
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    <tr th:each="empresa : ${empresas}">
+
+        <td th:text="${empresa.id}"></td>
+
+        <td th:text="${empresa.nombre}"></td>
+
+        <td th:text="${empresa.nit}"></td>
+
+        <td th:text="${empresa.telefono}"></td>
+
+        <td th:text="${empresa.correo}"></td>
+
+        <td th:text="${empresa.direccion}"></td>
+
+        <td>
+
+            <a
+                    th:href="@{/admin/empresas/editar/{id}(id=${empresa.id})}">
+                Editar
+            </a>
+
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+
+<br>
+
+<a th:href="@{/registro-empresa}">
+    Registrar nueva empresa
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/dashboard}">
+    Volver al Dashboard
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/logout}">
+    Cerrar sesión
+</a>
+
+</body>
+
+</html>
