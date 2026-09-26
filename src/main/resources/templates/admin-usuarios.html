@@ -25,6 +25,7 @@
         <th>Correo</th>
         <th>Rol actual</th>
         <th>Cambiar rol</th>
+        <th>Eliminar</th>
     </tr>
 
     </thead>
@@ -45,7 +46,12 @@
 
         <td>
 
+                    <span th:if="${usuario.id == usuarioSesionId}">
+                        Usuario actual
+                    </span>
+
             <form
+                    th:unless="${usuario.id == usuarioSesionId}"
                     th:action="@{/admin/usuarios/rol}"
                     method="post">
 
@@ -67,6 +73,31 @@
 
                 <button type="submit">
                     Guardar
+                </button>
+
+            </form>
+
+        </td>
+
+        <td>
+
+                    <span th:if="${usuario.id == usuarioSesionId}">
+                        Usuario actual
+                    </span>
+
+            <form
+                    th:unless="${usuario.id == usuarioSesionId}"
+                    th:action="@{/admin/usuarios/eliminar}"
+                    method="post"
+                    onsubmit="return confirm('¿Estás seguro de eliminar este usuario?');">
+
+                <input
+                        type="hidden"
+                        name="usuarioId"
+                        th:value="${usuario.id}">
+
+                <button type="submit">
+                    Eliminar
                 </button>
 
             </form>
