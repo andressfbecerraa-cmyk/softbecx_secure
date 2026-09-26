@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Portal del Proveedor</title>
 </head>
+
 <body>
-$END$
+
+<h1>Portal del Proveedor</h1>
+
+<h2>Acceso autorizado</h2>
+
+<p>
+    Bienvenido al portal de proveedores de SoftBecX.
+</p>
+
+<p>
+    ID del usuario:
+    <strong th:text="${usuarioId}"></strong>
+</p>
+
+<p>
+    Rol:
+    <strong th:text="${rol}"></strong>
+</p>
+
+<br>
+
+<a th:href="@{/dashboard}">
+    Volver al Dashboard
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/logout}">
+    Cerrar sesión
+</a>
+
 </body>
+
 </html>

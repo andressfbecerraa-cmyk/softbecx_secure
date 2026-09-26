@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registrar Factura</title>
+</head>
+
+<body>
+
+<h1>Registrar Factura</h1>
+
+<form
+        th:action="@{/admin/facturas}"
+        th:object="${factura}"
+        method="post">
+
+    <div>
+
+        <label for="numeroFactura">
+            Número de factura:
+        </label>
+
+        <input
+                type="text"
+                id="numeroFactura"
+                th:field="*{numeroFactura}">
+
+        <div
+                th:if="${#fields.hasErrors('numeroFactura')}"
+                th:errors="*{numeroFactura}">
+        </div>
+
+    </div>
+
+    <br>
+
+    <div>
+
+        <label for="fecha">
+            Fecha:
+        </label>
+
+        <input
+                type="date"
+                id="fecha"
+                th:field="*{fecha}">
+
+        <div
+                th:if="${#fields.hasErrors('fecha')}"
+                th:errors="*{fecha}">
+        </div>
+
+    </div>
+
+    <br>
+
+    <div>
+
+        <label for="concepto">
+            Concepto:
+        </label>
+
+        <input
+                type="text"
+                id="concepto"
+                th:field="*{concepto}">
+
+        <div
+                th:if="${#fields.hasErrors('concepto')}"
+                th:errors="*{concepto}">
+        </div>
+
+    </div>
+
+    <br>
+
+    <div>
+
+        <label for="valor">
+            Valor:
+        </label>
+
+        <input
+                type="number"
+                id="valor"
+                step="0.01"
+                min="0.01"
+                th:field="*{valor}">
+
+        <div
+                th:if="${#fields.hasErrors('valor')}"
+                th:errors="*{valor}">
+        </div>
+
+    </div>
+
+    <br>
+
+    <div>
+
+        <label for="empresa">
+            Empresa:
+        </label>
+
+        <select
+                id="empresa"
+                th:field="*{empresa}">
+
+            <option value="">
+                Seleccione una empresa
+            </option>
+
+            <option
+                    th:each="empresa : ${empresas}"
+                    th:value="${empresa.id}"
+                    th:text="${empresa.nombre}">
+            </option>
+
+        </select>
+
+    </div>
+
+    <br>
+
+    <div>
+
+        <label for="proveedor">
+            Proveedor:
+        </label>
+
+        <select
+                id="proveedor"
+                th:field="*{proveedor}">
+
+            <option value="">
+                Seleccione un proveedor
+            </option>
+
+            <option
+                    th:each="proveedor : ${proveedores}"
+                    th:value="${proveedor.id}"
+                    th:text="${proveedor.nombre + ' ' + proveedor.apellido}">
+            </option>
+
+        </select>
+
+    </div>
+
+    <br>
+
+    <button type="submit">
+        Registrar factura
+    </button>
+
+</form>
+
+<br>
+
+<a th:href="@{/admin/facturas}">
+    Volver a facturas
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/dashboard}">
+    Volver al Dashboard
+</a>
+
+</body>
+
+</html>

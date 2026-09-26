@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administración de Facturas</title>
+</head>
+
+<body>
+
+<h1>Administración de Facturas</h1>
+
+<h2>Facturas registradas</h2>
+
+<div
+        th:if="${errorEstado}"
+        th:text="${errorEstado}">
+</div>
+
+<br>
+
+<table border="1">
+
+    <thead>
+
+    <tr>
+        <th>ID</th>
+        <th>Número de factura</th>
+        <th>Fecha</th>
+        <th>Concepto</th>
+        <th>Valor</th>
+        <th>Empresa</th>
+        <th>Proveedor</th>
+        <th>Estado actual</th>
+        <th>Cambiar estado</th>
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    <tr th:each="factura : ${facturas}">
+
+        <td th:text="${factura.id}"></td>
+
+        <td th:text="${factura.numeroFactura}"></td>
+
+        <td th:text="${factura.fecha}"></td>
+
+        <td th:text="${factura.concepto}"></td>
+
+        <td th:text="${factura.valor}"></td>
+
+        <td th:text="${factura.empresa.nombre}"></td>
+
+        <td th:text="${factura.proveedor.nombre + ' ' + factura.proveedor.apellido}"></td>
+
+        <td th:text="${factura.estado}"></td>
+
+        <td>
+
+            <form
+                    th:action="@{/admin/facturas/estado}"
+                    method="post">
+
+                <input
+                        type="hidden"
+                        name="facturaId"
+                        th:value="${factura.id}">
+
+                <select name="estado">
+
+                    <option
+                            th:each="estado : ${estados}"
+                            th:value="${estado}"
+                            th:text="${estado}"
+                            th:selected="${estado == factura.estado}">
+                    </option>
+
+                </select>
+
+                <button type="submit">
+                    Guardar
+                </button>
+
+            </form>
+
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+
+<br>
+
+<a th:href="@{/admin/facturas/nueva}">
+    Registrar nueva factura
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/dashboard}">
+    Volver al Dashboard
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/logout}">
+    Cerrar sesión
+</a>
+
+</body>
+
+</html>
