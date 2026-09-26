@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+</head>
+
+<body>
+
+<h1>Dashboard SoftBecX</h1>
+
+<h2>Bienvenido</h2>
+
+<p>
+    Usuario autenticado correctamente.
+</p>
+
+<p>
+    ID del usuario:
+    <strong th:text="${usuarioId}"></strong>
+</p>
+
+<br>
+
+<a th:href="@{/logout}">
+    Cerrar sesión
+</a>
+
+</body>
+
+</html>

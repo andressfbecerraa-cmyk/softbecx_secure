@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administración de Usuarios</title>
+</head>
+
+<body>
+
+<h1>Administración de Usuarios</h1>
+
+<h2>Usuarios registrados</h2>
+
+<table border="1">
+
+    <thead>
+
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Correo</th>
+        <th>Rol actual</th>
+        <th>Cambiar rol</th>
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    <tr th:each="usuario : ${usuarios}">
+
+        <td th:text="${usuario.id}"></td>
+
+        <td th:text="${usuario.nombre}"></td>
+
+        <td th:text="${usuario.apellido}"></td>
+
+        <td th:text="${usuario.correo}"></td>
+
+        <td th:text="${usuario.rol}"></td>
+
+        <td>
+
+            <form
+                    th:action="@{/admin/usuarios/rol}"
+                    method="post">
+
+                <input
+                        type="hidden"
+                        name="usuarioId"
+                        th:value="${usuario.id}">
+
+                <select name="rol">
+
+                    <option
+                            th:each="rol : ${roles}"
+                            th:value="${rol}"
+                            th:text="${rol}"
+                            th:selected="${rol == usuario.rol}">
+                    </option>
+
+                </select>
+
+                <button type="submit">
+                    Guardar
+                </button>
+
+            </form>
+
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+
+<br>
+
+<a th:href="@{/dashboard}">
+    Volver al Dashboard
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/logout}">
+    Cerrar sesión
+</a>
+
+</body>
+
+</html>
