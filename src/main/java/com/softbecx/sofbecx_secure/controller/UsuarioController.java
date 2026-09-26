@@ -1,5 +1,6 @@
 package com.softbecx.sofbecx_secure.controller;
 
+import com.softbecx.sofbecx_secure.model.Rol;
 import com.softbecx.sofbecx_secure.model.Usuario;
 import com.softbecx.sofbecx_secure.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -38,11 +39,15 @@ public class UsuarioController {
         }
 
         if (usuarioService.existeCorreo(usuario.getCorreo())) {
-            model.addAttribute("correoDuplicado",
-                    "El correo electrónico ya está registrado");
+            model.addAttribute(
+                    "correoDuplicado",
+                    "El correo electrónico ya está registrado"
+            );
 
             return "registro";
         }
+
+        usuario.setRol(Rol.PROVEEDOR);
 
         usuarioService.guardarUsuario(usuario);
 

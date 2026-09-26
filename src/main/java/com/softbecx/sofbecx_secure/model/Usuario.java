@@ -1,6 +1,8 @@
 package com.softbecx.sofbecx_secure.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,5 +40,7 @@ public class Usuario {
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, message = "La contraseña debe tener mínimo 8 caracteres")
     private String password;
-}
 
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
+}
