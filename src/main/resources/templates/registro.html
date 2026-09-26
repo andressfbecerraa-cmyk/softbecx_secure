@@ -54,6 +54,10 @@
     <div th:if="${#fields.hasErrors('correo')}"
          th:errors="*{correo}">
     </div>
+
+    <div th:if="${correoDuplicado}"
+         th:text="${correoDuplicado}">
+    </div>
   </div>
 
   <br>

@@ -16,4 +16,8 @@ public class UsuarioService {
     public Usuario guardarUsuario(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
+
+    public boolean existeCorreo(String correo) {
+        return usuarioRepository.existsByCorreo(correo);
+    }
 }

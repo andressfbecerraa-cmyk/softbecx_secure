@@ -30,9 +30,17 @@ public class UsuarioController {
     @PostMapping("/registro")
     public String registrarUsuario(
             @Valid @ModelAttribute("usuario") Usuario usuario,
-            BindingResult result) {
+            BindingResult result,
+            Model model) {
 
         if (result.hasErrors()) {
+            return "registro";
+        }
+
+        if (usuarioService.existeCorreo(usuario.getCorreo())) {
+            model.addAttribute("correoDuplicado",
+                    "El correo electrónico ya está registrado");
+
             return "registro";
         }
 
