@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+    <title>Programación de Pagos</title>
+
+</head>
+
+<body>
+
+<h1>Programación de Pagos</h1>
+
+<p>
+    En esta sección se programan los desembolsos
+    de las facturas que ya fueron aprobadas y
+    validadas para pago.
+</p>
+
+<div
+        th:if="${errorProgramacion}"
+        th:text="${errorProgramacion}">
+</div>
+
+<hr>
+
+<h2>Facturas disponibles para programación</h2>
+
+<div th:if="${#lists.isEmpty(facturas)}">
+
+    <p>
+        No hay facturas disponibles para programar.
+    </p>
+
+</div>
+
+<table
+        border="1"
+        th:if="${!#lists.isEmpty(facturas)}">
+
+    <thead>
+
+    <tr>
+
+        <th>ID</th>
+
+        <th>Número de factura</th>
+
+        <th>Fecha</th>
+
+        <th>Concepto</th>
+
+        <th>Valor</th>
+
+        <th>Empresa</th>
+
+        <th>Proveedor</th>
+
+        <th>Programar pago</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    <tr th:each="factura : ${facturas}">
+
+        <td
+                th:text="${factura.id}">
+        </td>
+
+        <td
+                th:text="${factura.numeroFactura}">
+        </td>
+
+        <td
+                th:text="${factura.fecha}">
+        </td>
+
+        <td
+                th:text="${factura.concepto}">
+        </td>
+
+        <td
+                th:text="${factura.valor}">
+        </td>
+
+        <td
+                th:text="${factura.empresa.nombre}">
+        </td>
+
+        <td
+                th:text="${factura.proveedor.nombre
+                        + ' '
+                        + factura.proveedor.apellido}">
+        </td>
+
+        <td>
+
+            <form
+                    th:action="@{/admin/programaciones-pago}"
+                    method="post">
+
+                <input
+                        type="hidden"
+                        name="facturaId"
+                        th:value="${factura.id}">
+
+                <div>
+
+                    <label
+                            th:for="'fecha-' + ${factura.id}">
+                        Fecha programada:
+                    </label>
+
+                    <br>
+
+                    <input
+                            type="date"
+                            th:id="'fecha-' + ${factura.id}"
+                            name="fechaProgramada"
+                            th:min="${#temporals.format(
+                                        T(java.time.LocalDate).now(),
+                                        'yyyy-MM-dd'
+                                    )}"
+                            required>
+
+                </div>
+
+                <br>
+
+                <div>
+
+                    <label
+                            th:for="'observacion-' + ${factura.id}">
+                        Observación:
+                    </label>
+
+                    <br>
+
+                    <textarea
+                            th:id="'observacion-' + ${factura.id}"
+                            name="observacion"
+                            rows="4"
+                            cols="30"
+                            required
+                            placeholder="Escriba la observación de la programación">
+                            </textarea>
+
+                </div>
+
+                <br>
+
+                <button type="submit">
+                    Programar pago
+                </button>
+
+            </form>
+
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+
+<hr>
+
+<h2>Programaciones registradas</h2>
+
+<div
+        th:if="${#lists.isEmpty(programaciones)}">
+
+    <p>
+        No hay programaciones registradas.
+    </p>
+
+</div>
+
+<table
+        border="1"
+        th:if="${!#lists.isEmpty(programaciones)}">
+
+    <thead>
+
+    <tr>
+
+        <th>ID</th>
+
+        <th>Factura</th>
+
+        <th>Fecha programada</th>
+
+        <th>Estado</th>
+
+        <th>Observación</th>
+
+        <th>Usuario</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    <tr
+            th:each="programacion : ${programaciones}">
+
+        <td
+                th:text="${programacion.id}">
+        </td>
+
+        <td
+                th:text="${programacion.factura.numeroFactura}">
+        </td>
+
+        <td
+                th:text="${programacion.fechaProgramada}">
+        </td>
+
+        <td
+                th:text="${programacion.estado}">
+        </td>
+
+        <td
+                th:text="${programacion.observacion}">
+        </td>
+
+        <td
+                th:text="${programacion.usuario.nombre
+                        + ' '
+                        + programacion.usuario.apellido}">
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+
+<br>
+
+<a th:href="@{/admin/facturas}">
+    Volver a administración de facturas
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/dashboard}">
+    Volver al Dashboard
+</a>
+
+<br>
+<br>
+
+<a th:href="@{/logout}">
+    Cerrar sesión
+</a>
+
+</body>
+
+</html>
