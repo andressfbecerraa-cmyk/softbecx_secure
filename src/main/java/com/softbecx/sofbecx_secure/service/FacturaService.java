@@ -40,6 +40,13 @@ public class FacturaService {
         return facturaRepository.findAll();
     }
 
+    public List<Factura> listarFacturasPorProveedor(
+            Long proveedorId) {
+
+        return facturaRepository
+                .findByProveedorId(proveedorId);
+    }
+
     public Optional<Factura> buscarPorId(Long id) {
 
         return facturaRepository.findById(id);

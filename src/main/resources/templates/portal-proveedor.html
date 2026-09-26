@@ -2,31 +2,112 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
     <title>Portal del Proveedor</title>
+
 </head>
 
 <body>
 
 <h1>Portal del Proveedor</h1>
 
-<h2>Acceso autorizado</h2>
-
 <p>
-    Bienvenido al portal de proveedores de SoftBecX.
+    Bienvenido al portal de consulta de facturas.
 </p>
 
 <p>
-    ID del usuario:
-    <strong th:text="${usuarioId}"></strong>
+    ID de usuario:
+    <strong th:text="${usuarioId}">
+    </strong>
 </p>
 
 <p>
     Rol:
-    <strong th:text="${rol}"></strong>
+    <strong th:text="${rol}">
+    </strong>
 </p>
+
+<hr>
+
+<h2>Mis facturas</h2>
+
+<div th:if="${#lists.isEmpty(facturas)}">
+
+    <p>
+        No tienes facturas registradas.
+    </p>
+
+</div>
+
+<table
+        border="1"
+        th:if="${!#lists.isEmpty(facturas)}">
+
+    <thead>
+
+    <tr>
+
+        <th>ID</th>
+
+        <th>Número de factura</th>
+
+        <th>Fecha</th>
+
+        <th>Concepto</th>
+
+        <th>Valor</th>
+
+        <th>Empresa</th>
+
+        <th>Estado</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    <tr th:each="factura : ${facturas}">
+
+        <td
+                th:text="${factura.id}">
+        </td>
+
+        <td
+                th:text="${factura.numeroFactura}">
+        </td>
+
+        <td
+                th:text="${factura.fecha}">
+        </td>
+
+        <td
+                th:text="${factura.concepto}">
+        </td>
+
+        <td
+                th:text="${factura.valor}">
+        </td>
+
+        <td
+                th:text="${factura.empresa.nombre}">
+        </td>
+
+        <td
+                th:text="${factura.estado}">
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
 
 <br>
 
