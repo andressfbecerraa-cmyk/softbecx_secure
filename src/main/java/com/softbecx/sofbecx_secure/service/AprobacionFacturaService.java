@@ -1,5 +1,6 @@
 package com.softbecx.sofbecx_secure.service;
 
+import com.softbecx.sofbecx_secure.model.AccionAuditoria;
 import com.softbecx.sofbecx_secure.model.AprobacionFactura;
 import com.softbecx.sofbecx_secure.model.EstadoFactura;
 import com.softbecx.sofbecx_secure.model.Factura;
@@ -17,12 +18,18 @@ public class AprobacionFacturaService {
     private final AprobacionFacturaRepository
             aprobacionFacturaRepository;
 
+    private final AuditoriaService auditoriaService;
+
     public AprobacionFacturaService(
             AprobacionFacturaRepository
-                    aprobacionFacturaRepository) {
+                    aprobacionFacturaRepository,
+            AuditoriaService auditoriaService) {
 
         this.aprobacionFacturaRepository =
                 aprobacionFacturaRepository;
+
+        this.auditoriaService =
+                auditoriaService;
     }
 
     public boolean aprobarFactura(
@@ -80,6 +87,28 @@ public class AprobacionFacturaService {
 
         aprobacionFacturaRepository.save(
                 aprobacion
+        );
+
+        String descripcion;
+
+        if (resultado == ResultadoAprobacion.APROBADA) {
+
+            descripcion =
+                    "Factura aprobada. Observación: "
+                            + observacion;
+
+        } else {
+
+            descripcion =
+                    "Factura rechazada. Observación: "
+                            + observacion;
+        }
+
+        auditoriaService.registrar(
+                AccionAuditoria.APROBACION_FACTURA,
+                descripcion,
+                usuario,
+                factura
         );
 
         return true;

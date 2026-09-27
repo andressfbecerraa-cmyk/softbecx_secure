@@ -1,5 +1,6 @@
 package com.softbecx.sofbecx_secure.service;
 
+import com.softbecx.sofbecx_secure.model.AccionAuditoria;
 import com.softbecx.sofbecx_secure.model.EstadoFactura;
 import com.softbecx.sofbecx_secure.model.Factura;
 import com.softbecx.sofbecx_secure.model.ResultadoValidacion;
@@ -16,11 +17,17 @@ public class ValidacionPagoService {
 
     private final ValidacionPagoRepository validacionPagoRepository;
 
+    private final AuditoriaService auditoriaService;
+
     public ValidacionPagoService(
-            ValidacionPagoRepository validacionPagoRepository) {
+            ValidacionPagoRepository validacionPagoRepository,
+            AuditoriaService auditoriaService) {
 
         this.validacionPagoRepository =
                 validacionPagoRepository;
+
+        this.auditoriaService =
+                auditoriaService;
     }
 
     public boolean validarFactura(
@@ -76,6 +83,28 @@ public class ValidacionPagoService {
 
         validacionPagoRepository.save(
                 validacionPago
+        );
+
+        String descripcion;
+
+        if (resultado == ResultadoValidacion.APROBADA) {
+
+            descripcion =
+                    "Validación de pago aprobada. Observación: "
+                            + observacion;
+
+        } else {
+
+            descripcion =
+                    "Validación de pago rechazada. Observación: "
+                            + observacion;
+        }
+
+        auditoriaService.registrar(
+                AccionAuditoria.VALIDACION_PAGO,
+                descripcion,
+                usuario,
+                factura
         );
 
         return true;

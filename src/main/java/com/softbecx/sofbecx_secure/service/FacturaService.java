@@ -1,8 +1,10 @@
 package com.softbecx.sofbecx_secure.service;
 
+import com.softbecx.sofbecx_secure.model.AccionAuditoria;
 import com.softbecx.sofbecx_secure.model.EstadoFactura;
 import com.softbecx.sofbecx_secure.model.Factura;
 import com.softbecx.sofbecx_secure.model.ResultadoValidacion;
+import com.softbecx.sofbecx_secure.model.Usuario;
 import com.softbecx.sofbecx_secure.repository.FacturaRepository;
 import com.softbecx.sofbecx_secure.repository.ValidacionPagoRepository;
 import org.springframework.stereotype.Service;
@@ -17,22 +19,42 @@ public class FacturaService {
 
     private final ValidacionPagoRepository validacionPagoRepository;
 
+    private final AuditoriaService auditoriaService;
+
     public FacturaService(
             FacturaRepository facturaRepository,
-            ValidacionPagoRepository validacionPagoRepository) {
+            ValidacionPagoRepository validacionPagoRepository,
+            AuditoriaService auditoriaService) {
 
         this.facturaRepository =
                 facturaRepository;
 
         this.validacionPagoRepository =
                 validacionPagoRepository;
+
+        this.auditoriaService =
+                auditoriaService;
     }
 
-    public Factura guardarFactura(Factura factura) {
+    public Factura guardarFactura(
+            Factura factura,
+            Usuario usuario) {
 
-        factura.setEstado(EstadoFactura.PENDIENTE);
+        factura.setEstado(
+                EstadoFactura.PENDIENTE
+        );
 
-        return facturaRepository.save(factura);
+        Factura facturaGuardada =
+                facturaRepository.save(factura);
+
+        auditoriaService.registrar(
+                AccionAuditoria.CREACION_FACTURA,
+                "Factura creada correctamente.",
+                usuario,
+                facturaGuardada
+        );
+
+        return facturaGuardada;
     }
 
     public List<Factura> listarFacturas() {

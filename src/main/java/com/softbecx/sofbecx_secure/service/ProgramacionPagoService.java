@@ -1,5 +1,6 @@
 package com.softbecx.sofbecx_secure.service;
 
+import com.softbecx.sofbecx_secure.model.AccionAuditoria;
 import com.softbecx.sofbecx_secure.model.EstadoFactura;
 import com.softbecx.sofbecx_secure.model.EstadoProgramacionPago;
 import com.softbecx.sofbecx_secure.model.Factura;
@@ -27,12 +28,15 @@ public class ProgramacionPagoService {
 
     private final FacturaService facturaService;
 
+    private final AuditoriaService auditoriaService;
+
     public ProgramacionPagoService(
             ProgramacionPagoRepository
                     programacionPagoRepository,
             ValidacionPagoRepository
                     validacionPagoRepository,
-            FacturaService facturaService) {
+            FacturaService facturaService,
+            AuditoriaService auditoriaService) {
 
         this.programacionPagoRepository =
                 programacionPagoRepository;
@@ -42,6 +46,9 @@ public class ProgramacionPagoService {
 
         this.facturaService =
                 facturaService;
+
+        this.auditoriaService =
+                auditoriaService;
     }
 
     public boolean programarPago(
@@ -126,6 +133,14 @@ public class ProgramacionPagoService {
                 programacionPago
         );
 
+        auditoriaService.registrar(
+                AccionAuditoria.PROGRAMACION_PAGO,
+                "Pago programado correctamente. Observación: "
+                        + observacion,
+                usuario,
+                factura
+        );
+
         return true;
     }
 
@@ -180,6 +195,13 @@ public class ProgramacionPagoService {
 
         programacionPagoRepository.save(
                 programacion
+        );
+
+        auditoriaService.registrar(
+                AccionAuditoria.EJECUCION_PAGO,
+                "Desembolso ejecutado correctamente.",
+                programacion.getUsuario(),
+                factura
         );
 
         return true;

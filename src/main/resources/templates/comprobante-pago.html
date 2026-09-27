@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>Comprobante de Pago - SoftBecX</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 30px;
+    }
+
+    .contenedor {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .comprobante {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .encabezado {
+      text-align: center;
+      border-bottom: 2px solid #1f2937;
+      padding-bottom: 20px;
+      margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+      margin: 0;
+      color: #1f2937;
+    }
+
+    .encabezado p {
+      margin: 8px 0 0;
+      color: #6b7280;
+    }
+
+    .seccion {
+      margin-bottom: 25px;
+    }
+
+    .seccion h2 {
+      font-size: 18px;
+      color: #1f2937;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+
+    .dato {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 8px 0;
+    }
+
+    .etiqueta {
+      font-weight: bold;
+      color: #374151;
+    }
+
+    .valor {
+      color: #4b5563;
+      text-align: right;
+    }
+
+    .estado {
+      font-weight: bold;
+      color: #166534;
+    }
+
+    .acciones {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .boton {
+      display: inline-block;
+      padding: 10px 16px;
+      text-decoration: none;
+      border-radius: 6px;
+      color: white;
+      background-color: #374151;
+    }
+
+    .boton-imprimir {
+      background-color: #166534;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .mensaje-error {
+      background-color: #fee2e2;
+      color: #991b1b;
+      padding: 15px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    @media print {
+
+      body {
+        background-color: white;
+        padding: 0;
+      }
+
+      .acciones {
+        display: none;
+      }
+
+      .comprobante {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+  <div class="comprobante">
+
+    <div class="encabezado">
+
+      <h1>SOFTBECX</h1>
+
+      <p>Comprobante Digital de Pago</p>
+
+    </div>
+
+    <div th:if="${error}"
+         class="mensaje-error"
+         th:text="${error}">
+      Error
+    </div>
+
+    <div th:if="${factura}">
+
+      <div class="seccion">
+
+        <h2>Información de la factura</h2>
+
+        <div class="dato">
+
+                    <span class="etiqueta">
+                        Número de factura:
+                    </span>
+
+          <span class="valor"
+                th:text="${factura.numeroFactura}">
+                        Factura
+                    </span>
+
+        </div>
+
+        <div class="dato">
+
+                    <span class="etiqueta">
+                        Fecha de factura:
+                    </span>
+
+          <span class="valor"
+                th:text="${factura.fecha}">
+                        Fecha
+                    </span>
+
+        </div>
+
+        <div class="dato">
+
+                    <span class="etiqueta">
+                        Concepto:
+                    </span>
+
+          <span class="valor"
+                th:text="${factura.concepto}">
+                        Concepto
+                    </span>
+
+        </div>
+
+        <div class="dato">
+
+                    <span class="etiqueta">
+                        Valor:
+                    </span>
+
+          <span class="valor"
+                th:text="${factura.valor}">
+                        Valor
+                    </span>
+
+        </div>
+
+        <div class="dato">
+
+                    <span class="etiqueta">
+                        Estado:
+                    </span>
+
+          <span class="valor estado"
+                th:text="${factura.estado}">
+                        PAGADA
+                    </span>
+
+        </div>
+
+      </div>
+
+      <div class="seccion">
+
+        <h2>Empresa</h2>
+
+        <div class="dato">
+
+                    <span class="etiqueta">
+                        Empresa:
+                    </span>
+
+          <span class="valor"
+                th:if="${factura.empresa != null}"
+                th:text="${factura.empresa.nombre}">
+                        Empresa
+                    </span>
+
+          <span class="valor"
+                th:if="${factura.empresa == null}">
+                        Sin empresa
+                    </span>
+
+        </div>
+
+        <div class="dato">
+
+                    <span class="etiqueta">
+                        NIT:
+                    </span>
+
+          <span class="valor"
+                th:if="${factura.empresa != null}"
+                th:text="${factura.empresa.nit}">
+                        NIT
+                    </span>
+
+          <span class="valor"
+                th:if="${factura.empresa == null}">
+                        Sin NIT
+                    </span>
+
+        </div>
+
+      </div>
+
+      <div class="seccion">
+
+        <h2>Proveedor</h2>
+
+        <div class="dato">
+
+                    <span class="etiqueta">
+                        Proveedor:
+                    </span>
+
+          <span class="valor"
+                th:if="${factura.proveedor != null}"
+                th:text="${factura.proveedor.nombre + ' ' + factura.proveedor.apellido}">
+                        Proveedor
+                    </span>
+
+          <span class="valor"
+                th:if="${factura.proveedor == null}">
+                        Sin proveedor
+                    </span>
+
+        </div>
+
+        <div class="dato">
+
+                    <span class="etiqueta">
+                        Correo:
+                    </span>
+
+          <span class="valor"
+                th:if="${factura.proveedor != null}"
+                th:text="${factura.proveedor.correo}">
+                        Correo
+                    </span>
+
+          <span class="valor"
+                th:if="${factura.proveedor == null}">
+                        Sin correo
+                    </span>
+
+        </div>
+
+      </div>
+
+      <div class="acciones">
+
+        <a class="boton"
+           th:href="@{/dashboard}">
+          Volver al dashboard
+        </a>
+
+        <button class="boton boton-imprimir"
+                type="button"
+                onclick="window.print()">
+          Imprimir comprobante
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

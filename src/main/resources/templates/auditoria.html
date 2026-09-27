@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Historial de Auditoría - SoftBecX</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .contenedor {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .boton {
+            display: inline-block;
+            padding: 10px 16px;
+            text-decoration: none;
+            border-radius: 6px;
+            color: white;
+            background-color: #374151;
+        }
+
+        .tabla-contenedor {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #1f2937;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .sin-registros {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        .accion {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <div class="encabezado">
+
+        <h1>Historial de Auditoría</h1>
+
+        <a class="boton"
+           th:href="@{/dashboard}">
+            Volver al dashboard
+        </a>
+
+    </div>
+
+    <div class="tabla-contenedor">
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Acción</th>
+                <th>Usuario</th>
+                <th>Factura</th>
+                <th>Descripción</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="auditoria : ${auditorias}">
+
+                <td th:text="${auditoria.fecha}">
+                    Fecha
+                </td>
+
+                <td class="accion"
+                    th:text="${auditoria.accion}">
+                    Acción
+                </td>
+
+                <td>
+
+                    <span th:if="${auditoria.usuario != null}"
+                          th:text="${auditoria.usuario.nombre + ' ' + auditoria.usuario.apellido}">
+                        Usuario
+                    </span>
+
+                    <span th:if="${auditoria.usuario == null}">
+                        Sin usuario
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <span th:if="${auditoria.factura != null}"
+                          th:text="${auditoria.factura.numeroFactura}">
+                        Factura
+                    </span>
+
+                    <span th:if="${auditoria.factura == null}">
+                        Sin factura
+                    </span>
+
+                </td>
+
+                <td th:text="${auditoria.descripcion}">
+                    Descripción
+                </td>
+
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(auditorias)}">
+
+                <td colspan="5"
+                    class="sin-registros">
+                    No existen registros de auditoría.
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class FacturaController {
@@ -126,7 +127,24 @@ public class FacturaController {
             return "registro-factura";
         }
 
-        facturaService.guardarFactura(factura);
+        Optional<Usuario> usuarioEncontrado =
+                usuarioRepository.findById(
+                        Long.valueOf(
+                                usuarioId.toString()
+                        )
+                );
+
+        if (usuarioEncontrado.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Usuario usuario =
+                usuarioEncontrado.get();
+
+        facturaService.guardarFactura(
+                factura,
+                usuario
+        );
 
         return "redirect:/admin/facturas";
     }
@@ -140,7 +158,9 @@ public class FacturaController {
                 usuarioRepository.findAll()
                         .stream()
                         .filter(usuario ->
-                                Rol.PROVEEDOR.equals(usuario.getRol()))
+                                Rol.PROVEEDOR.equals(
+                                        usuario.getRol()
+                                ))
                         .toList();
 
         model.addAttribute(
