@@ -18,14 +18,24 @@
 <h1>Programación de Pagos</h1>
 
 <p>
-    En esta sección se programan los desembolsos
-    de las facturas que ya fueron aprobadas y
-    validadas para pago.
+    En esta sección se programan y ejecutan
+    los desembolsos de las facturas aprobadas
+    y validadas para pago.
 </p>
 
 <div
         th:if="${errorProgramacion}"
         th:text="${errorProgramacion}">
+</div>
+
+<div
+        th:if="${errorEjecucion}"
+        th:text="${errorEjecucion}">
+</div>
+
+<div
+        th:if="${mensajeEjecucion}"
+        th:text="${mensajeEjecucion}">
 </div>
 
 <hr>
@@ -199,11 +209,15 @@
 
         <th>Fecha programada</th>
 
+        <th>Fecha ejecución</th>
+
         <th>Estado</th>
 
         <th>Observación</th>
 
         <th>Usuario</th>
+
+        <th>Acción</th>
 
     </tr>
 
@@ -227,6 +241,10 @@
         </td>
 
         <td
+                th:text="${programacion.fechaEjecucion}">
+        </td>
+
+        <td
                 th:text="${programacion.estado}">
         </td>
 
@@ -238,6 +256,48 @@
                 th:text="${programacion.usuario.nombre
                         + ' '
                         + programacion.usuario.apellido}">
+        </td>
+
+        <td>
+
+            <div
+                    th:if="${programacion.estado.name() == 'PROGRAMADO'}">
+
+                <form
+                        th:action="@{/admin/programaciones-pago/ejecutar}"
+                        method="post">
+
+                    <input
+                            type="hidden"
+                            name="programacionId"
+                            th:value="${programacion.id}">
+
+                    <button type="submit">
+                        Ejecutar desembolso
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div
+                    th:if="${programacion.estado.name() == 'EJECUTADO'}">
+
+                        <span>
+                            Desembolso ejecutado
+                        </span>
+
+            </div>
+
+            <div
+                    th:if="${programacion.estado.name() == 'CANCELADO'}">
+
+                        <span>
+                            Programación cancelada
+                        </span>
+
+            </div>
+
         </td>
 
     </tr>

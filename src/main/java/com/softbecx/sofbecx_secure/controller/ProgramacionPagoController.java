@@ -2,6 +2,7 @@ package com.softbecx.sofbecx_secure.controller;
 
 import com.softbecx.sofbecx_secure.model.EstadoFactura;
 import com.softbecx.sofbecx_secure.model.Factura;
+import com.softbecx.sofbecx_secure.model.ResultadoValidacion;
 import com.softbecx.sofbecx_secure.model.Usuario;
 import com.softbecx.sofbecx_secure.repository.FacturaRepository;
 import com.softbecx.sofbecx_secure.repository.UsuarioRepository;
@@ -147,6 +148,53 @@ public class ProgramacionPagoController {
         return "redirect:/admin/programaciones-pago";
     }
 
+    @PostMapping("/admin/programaciones-pago/ejecutar")
+    public String ejecutarPago(
+            HttpSession session,
+            @RequestParam("programacionId")
+            Long programacionId,
+            Model model) {
+
+        Object usuarioId =
+                session.getAttribute("usuarioId");
+
+        Object rol =
+                session.getAttribute("rol");
+
+        if (usuarioId == null) {
+            return "redirect:/login";
+        }
+
+        if (!puedeProgramarPago(rol)) {
+            return "acceso-denegado";
+        }
+
+        boolean pagoEjecutado =
+                programacionPagoService
+                        .ejecutarPago(
+                                programacionId
+                        );
+
+        cargarDatos(model);
+
+        if (!pagoEjecutado) {
+
+            model.addAttribute(
+                    "errorEjecucion",
+                    "No se puede ejecutar el desembolso. Verifique que la programación esté en estado PROGRAMADO y que la factura cumpla las condiciones para ser pagada."
+            );
+
+            return "programacion-pagos";
+        }
+
+        model.addAttribute(
+                "mensajeEjecucion",
+                "El desembolso fue ejecutado correctamente y la factura quedó marcada como PAGADA."
+        );
+
+        return "programacion-pagos";
+    }
+
     private boolean puedeProgramarPago(Object rol) {
 
         return "ADMIN".equals(String.valueOf(rol))
@@ -188,7 +236,7 @@ public class ProgramacionPagoController {
         return validacionPagoRepository
                 .existsByFacturaIdAndResultado(
                         facturaId,
-                        com.softbecx.sofbecx_secure.model.ResultadoValidacion.APROBADA
+                        ResultadoValidacion.APROBADA
                 );
     }
 }

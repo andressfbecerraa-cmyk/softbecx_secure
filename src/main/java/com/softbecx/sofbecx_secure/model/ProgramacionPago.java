@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "programaciones_pago")
@@ -32,6 +33,8 @@ public class ProgramacionPago {
 
     @NotNull(message = "La fecha programada es obligatoria")
     private LocalDate fechaProgramada;
+
+    private LocalDateTime fechaEjecucion;
 
     @NotNull(message = "El estado de la programación es obligatorio")
     @Enumerated(EnumType.STRING)

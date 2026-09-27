@@ -9,9 +9,12 @@ import com.softbecx.sofbecx_secure.model.Usuario;
 import com.softbecx.sofbecx_secure.repository.ProgramacionPagoRepository;
 import com.softbecx.sofbecx_secure.repository.ValidacionPagoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProgramacionPagoService {
@@ -22,17 +25,23 @@ public class ProgramacionPagoService {
     private final ValidacionPagoRepository
             validacionPagoRepository;
 
+    private final FacturaService facturaService;
+
     public ProgramacionPagoService(
             ProgramacionPagoRepository
                     programacionPagoRepository,
             ValidacionPagoRepository
-                    validacionPagoRepository) {
+                    validacionPagoRepository,
+            FacturaService facturaService) {
 
         this.programacionPagoRepository =
                 programacionPagoRepository;
 
         this.validacionPagoRepository =
                 validacionPagoRepository;
+
+        this.facturaService =
+                facturaService;
     }
 
     public boolean programarPago(
@@ -115,6 +124,62 @@ public class ProgramacionPagoService {
 
         programacionPagoRepository.save(
                 programacionPago
+        );
+
+        return true;
+    }
+
+    @Transactional
+    public boolean ejecutarPago(Long programacionId) {
+
+        if (programacionId == null) {
+            return false;
+        }
+
+        Optional<ProgramacionPago>
+                programacionEncontrada =
+                programacionPagoRepository
+                        .findById(programacionId);
+
+        if (programacionEncontrada.isEmpty()) {
+            return false;
+        }
+
+        ProgramacionPago programacion =
+                programacionEncontrada.get();
+
+        if (programacion.getEstado()
+                != EstadoProgramacionPago.PROGRAMADO) {
+
+            return false;
+        }
+
+        Factura factura =
+                programacion.getFactura();
+
+        if (factura == null) {
+            return false;
+        }
+
+        boolean facturaPagada =
+                facturaService.marcarComoPagada(
+                        factura
+                );
+
+        if (!facturaPagada) {
+            return false;
+        }
+
+        programacion.setEstado(
+                EstadoProgramacionPago.EJECUTADO
+        );
+
+        programacion.setFechaEjecucion(
+                LocalDateTime.now()
+        );
+
+        programacionPagoRepository.save(
+                programacion
         );
 
         return true;
